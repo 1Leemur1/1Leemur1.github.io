@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div id="google_translate_element"></div>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ru'
+  }, 'google_translate_element');
+}
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+
+<style>
+#tab { display:none; margin-top:10px; border:1px solid #ccc; padding:10px; }
+.post { border-top:1px solid #aaa; margin-top:10px; padding-top:10px; }
+img { max-width:150px; display:block; margin-top:5px; }
+</style>
+</head>
+<body>
+
+<button onclick="tab.style.display = tab.style.display==='block'?'none':'block'">
+Открыть вкладку
+</button>
+
+<div id="tab">
+  <textarea id="text" placeholder="Катон-Карагай"></textarea><br><br>
+  <input type="file" id="file" accept="image/*"><br><br>
+  <button onclick="publish()">Опубликовать</button>
+</div>
+
+<div id="posts"></div>
+
+<script>
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+function publish(){
+  let text = document.getElementById("text").value;
+  let file = document.getElementById("file").files[0];
+
+  if(!text && !file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e){
+    let post = {
+      text: text,
+      img: file ? e.target.result : null
+    };
+    posts.push(post);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    showPosts();
+  };
+
+  if(file) reader.readAsDataURL(file);
+  else {
+    posts.push({text:text, img:null});
+    localStorage.setItem("posts", JSON.stringify(posts));
+    showPosts();
+  }
+}
+
+function showPosts(){
+  let container = document.getElementById("posts");
+  container.innerHTML = "";
+  posts.forEach(p=>{
+    container.innerHTML += `
+      <div class="post">
+        <p>${p.text}</p>
+        ${p.img ? `<img src="${p.img}">` : ""}
+      </div>
+    `;
+  });
+}
+
+showPosts();
+</script>
+
+</body>
+</html>
+</body>
+</head>
+</html>

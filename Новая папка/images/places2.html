@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<div id="google_translate_element"></div>
+
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'ru'
+  }, 'google_translate_element');
+}
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+
+<style>
+#tab { display:none; margin-top:10px; border:1px solid #ccc; padding:10px; }
+.post { border-top:1px solid #aaa; margin-top:10px; padding-top:10px; }
+img { max-width:150px; display:block; margin-top:5px; }
+</style>
+</head>
+<body>
+
+<button onclick="tab.style.display = tab.style.display==='block'?'none':'block'">
+Открыть вкладку
+</button>
+
+<div id="tab">
+  <textarea id="text" placeholder="Бухтарминское водохранилище — крупнейший искусственный водоём Казахстан и один из самых больших в Центральной Азии. Оно расположено на реке Иртыш и было создано в 1960 году после строительства Бухтарминская ГЭС.
+Площадь водохранилища составляет около 5 500 км², а длина превышает 400 км. По своим масштабам оно напоминает настоящее море: здесь есть заливы, полуострова и живописные бухты. Водоём играет важную роль в энергетике, судоходстве, орошении сельскохозяйственных земель и регулировании стока Иртыша.
+Бухтарминское водохранилище также является популярной зоной отдыха. Чистая вода, песчаные пляжи и горные пейзажи Восточного Казахстана привлекают туристов летом. Здесь развито рыболовство: водятся судак, щука, лещ и другие виды рыб.
+Сегодня Бухтарминское водохранилище — не только стратегически важный объект энергетики, но и одно из самых красивых природно-технических сооружений региона."></textarea><br><br>
+  <input type="file" id="file" accept="image/*"><br><br>
+  <button onclick="publish()">Опубликовать</button>
+</div>
+
+<div id="posts"></div>
+
+<script>
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+function publish(){
+  let text = document.getElementById("text").value;
+  let file = document.getElementById("file").files[0];
+
+  if(!text && !file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(e){
+    let post = {
+      text: text,
+      img: file ? e.target.result : null
+    };
+    posts.push(post);
+    localStorage.setItem("posts", JSON.stringify(posts));
+    showPosts();
+  };
+
+  if(file) reader.readAsDataURL(file);
+  else {
+    posts.push({text:text, img:null});
+    localStorage.setItem("posts", JSON.stringify(posts));
+    showPosts();
+  }
+}
+
+function showPosts(){
+  let container = document.getElementById("posts");
+  container.innerHTML = "";
+  posts.forEach(p=>{
+    container.innerHTML += `
+      <div class="post">
+        <p>${p.text}</p>
+        ${p.img ? `<img src="${p.img}">` : ""}
+      </div>
+    `;
+  });
+}
+
+showPosts();
+</script>
+
+</body>
+</html>
+</body>
+</head>
+</html>
+
